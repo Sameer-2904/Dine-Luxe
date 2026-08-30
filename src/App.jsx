@@ -166,6 +166,7 @@ function App() {
 
     const handleMouseEnter = e => {
       const target = e.target
+      if (!target.closest) return
       if (target.closest('.gallery-item') || target.closest('img')) {
         setCursorState(prev => ({ ...prev, active: true, text: 'VIEW' }))
       } else if (target.closest('.button') || target.closest('.reserve-link') || target.closest('.text-link')) {
