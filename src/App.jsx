@@ -82,6 +82,7 @@ function App() {
   const smoothX = useSpring(x, { stiffness: 80, damping: 20 }); const smoothY = useSpring(y, { stiffness: 80, damping: 20 })
   const mainRef = useRef(null)
   const lenisRef = useRef(null)
+  const heroCanvasRef = useRef(null)
 
   // Initialize Lenis for smooth scrolling
   useEffect(() => {
@@ -147,6 +148,91 @@ function App() {
     const onScroll = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // Cinematic ambient canvas for hero atmosphere
+  useEffect(() => {
+    const canvas = heroCanvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const particles = Array.from({ length: 38 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      r: Math.random() * 2.2 + 1,
+      vx: (Math.random() - 0.5) * 0.2,
+      vy: (Math.random() - 0.5) * 0.25,
+      hue: 24 + Math.random() * 18,
+    }))
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect()
+      const dpr = window.devicePixelRatio || 1
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr))
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr))
+      ctx.setTransform(1, 0, 0, 1, 0, 0)
+      ctx.scale(dpr, dpr)
+    }
+
+    const draw = t => {
+      const width = canvas.clientWidth
+      const height = canvas.clientHeight
+      ctx.clearRect(0, 0, width, height)
+
+      const glow = ctx.createRadialGradient(width * 0.36, height * 0.32, 0, width * 0.36, height * 0.32, width * 0.8)
+      glow.addColorStop(0, 'rgba(199, 116, 67, 0.16)')
+      glow.addColorStop(0.45, 'rgba(199, 116, 67, 0.08)')
+      glow.addColorStop(1, 'rgba(10, 10, 10, 0)')
+      ctx.fillStyle = glow
+      ctx.fillRect(0, 0, width, height)
+
+      ctx.beginPath()
+      ctx.moveTo(width * 0.02, height * 0.7)
+      ctx.bezierCurveTo(width * 0.18, height * 0.5, width * 0.42, height * 0.8, width * 0.58, height * 0.68)
+      ctx.bezierCurveTo(width * 0.74, height * 0.56, width * 0.9, height * 0.74, width * 0.98, height * 0.65)
+      ctx.strokeStyle = 'rgba(226, 181, 138, 0.18)'
+      ctx.lineWidth = 1.2
+      ctx.stroke()
+
+      particles.forEach((particle, index) => {
+        particle.x += particle.vx + Math.sin((t * 0.0008) + index) * 0.003
+        particle.y += particle.vy + Math.cos((t * 0.0009) + index) * 0.004
+
+        if (particle.x < 0 || particle.x > 1) particle.vx *= -1
+        if (particle.y < 0 || particle.y > 1) particle.vy *= -1
+
+        const px = particle.x * width
+        const py = particle.y * height
+
+        ctx.beginPath()
+        ctx.fillStyle = `hsla(${particle.hue}, 76%, 72%, 0.9)`
+        ctx.arc(px, py, particle.r, 0, Math.PI * 2)
+        ctx.fill()
+      })
+
+      ctx.beginPath()
+      for (let x = 0; x <= width; x += 18) {
+        const y = height * 0.82 + Math.sin((x * 0.03) + t * 0.0015) * 12
+        if (x === 0) ctx.moveTo(x, y)
+        else ctx.lineTo(x, y)
+      }
+      ctx.strokeStyle = 'rgba(199, 116, 67, 0.12)'
+      ctx.lineWidth = 1
+      ctx.stroke()
+
+      animationFrame = requestAnimationFrame(draw)
+    }
+
+    resize()
+    window.addEventListener('resize', resize)
+    let animationFrame = requestAnimationFrame(draw)
+
+    return () => {
+      cancelAnimationFrame(animationFrame)
+      window.removeEventListener('resize', resize)
+    }
   }, [])
 
   // Mouse tracking for sculpture
@@ -246,6 +332,7 @@ function App() {
         </motion.div>}
 
         <section className="hero" id="home" style={{ backgroundImage: `linear-gradient(90deg, rgba(13,13,12,.88) 0%, rgba(13,13,12,.56) 48%, rgba(13,13,12,.2) 100%), url(${heroImage})` }}>
+          <canvas ref={heroCanvasRef} className="hero-canvas" />
           <div className="hero-copy">
             <motion.p className="eyebrow" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .3 }}>FINE DINING, REIMAGINED</motion.p>
             <motion.h1 initial={{ opacity: 0, y: 35 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: .45 }}>A taste that<br /><em>lingers like</em><br />candlelight.</motion.h1>

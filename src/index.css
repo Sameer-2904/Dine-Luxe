@@ -316,21 +316,43 @@ main{position:relative;overflow-x:hidden;background:var(--bg);z-index:1}
   align-items:center;
   padding:140px 5vw 90px;
   margin-top:90px;
-  overflow:hidden
+  overflow:hidden;
+  isolation:isolate
 }
 
 .hero::before{
   content:'';
   position:absolute;
   inset:0;
-  background:radial-gradient(circle at 60% 20%,rgba(199,116,67,.08),transparent 35%),linear-gradient(180deg,transparent 0%,rgba(0,0,0,.2) 100%);
+  background:radial-gradient(circle at 60% 20%,rgba(199,116,67,.14),transparent 26%),radial-gradient(circle at 30% 70%,rgba(255,255,255,.05),transparent 32%),linear-gradient(180deg,transparent 0%,rgba(0,0,0,.2) 100%);
   pointer-events:none
+}
+
+.hero::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,rgba(10,10,10,.78) 0%,rgba(10,10,10,.38) 46%,rgba(10,10,10,.08) 100%);
+  pointer-events:none
+}
+
+.hero-canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  opacity:.8;
+  z-index:1;
+  pointer-events:none;
+  mix-blend-mode:screen;
 }
 
 .hero-copy{
   max-width:600px;
   position:relative;
-  z-index:2
+  z-index:2;
+  padding-right:40px
 }
 
 .hero-copy .eyebrow{
@@ -1181,8 +1203,16 @@ footer a:hover{
 
 @media(max-width:900px){
   .hero{padding:120px 5vw 60px;margin-top:72px}
+  .hero-copy{max-width:54%;padding-right:10px}
   .hero-actions{flex-direction:column;align-items:flex-start}
-  .sculpture{opacity:.6;right:-80px}
+  .sculpture{
+    right:clamp(10px,2vw,24px);
+    left:auto;
+    width:clamp(150px,34vw,220px);
+    height:220px;
+    opacity:.82;
+    transform:translateY(-50%);
+  }
   .nav nav,.nav .reserve-link{display:none}
   .menu-toggle{display:block;background:0;border:0;color:var(--text);cursor:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center}
   .mobile-menu{
@@ -1222,8 +1252,18 @@ footer a:hover{
   .nav.scrolled{height:70px}
   .nav nav{display:none}
   .hero{padding:100px 20px 40px;margin-top:70px;min-height:auto}
-  .hero-copy{max-width:100%}
+  .hero-copy{max-width:100%;padding-right:0}
   .hero-copy h1{font-size:clamp(36px,8vw,48px)}
+  .hero-copy .eyebrow{margin-bottom:18px}
+  .hero-desc{max-width:100%}
+  .sculpture{
+    right:12px;
+    left:auto;
+    top:52%;
+    width:clamp(100px,32vw,150px);
+    height:160px;
+    opacity:.9;
+  }
   .hero-meta{flex-direction:column;gap:20px;bottom:40px}
   .hero-meta>span:first-child,.hero-meta>span:last-child{display:none}
   .hero-meta{justify-content:center;padding:0 20px}
