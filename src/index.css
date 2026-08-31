@@ -1251,22 +1251,52 @@ footer a:hover{
   .nav{height:70px;padding:0 20px}
   .nav.scrolled{height:70px}
   .nav nav{display:none}
-  .hero{padding:100px 20px 40px;margin-top:70px;min-height:auto}
+  .hero{padding:100px 20px 40px;margin-top:70px;min-height:auto;display:block}
   .hero-copy{max-width:100%;padding-right:0}
   .hero-copy h1{font-size:clamp(36px,8vw,48px)}
   .hero-copy .eyebrow{margin-bottom:18px}
   .hero-desc{max-width:100%}
-  .sculpture{
-    right:12px;
-    left:auto;
-    top:52%;
-    width:clamp(100px,32vw,150px);
-    height:160px;
-    opacity:.9;
+  .hero-actions{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+    margin-top:26px
   }
-  .hero-meta{flex-direction:column;gap:20px;bottom:40px}
+  .hero-actions .button,
+  .hero-actions .text-link{
+    width:auto;
+    max-width:100%;
+    white-space:normal;
+    line-height:1.4
+  }
+  .sculpture{
+    position:relative;
+    right:auto;
+    left:auto;
+    top:auto;
+    width:clamp(110px,34vw,160px);
+    height:170px;
+    opacity:.9;
+    display:block;
+    margin:18px 0 8px auto;
+    float:right;
+    transform:none;
+  }
+  .hero-meta{
+    position:relative;
+    left:auto;
+    transform:none;
+    bottom:auto;
+    flex-direction:column;
+    gap:12px;
+    width:100%;
+    max-width:none;
+    justify-content:flex-start;
+    padding:0;
+    margin-top:26px
+  }
   .hero-meta>span:first-child,.hero-meta>span:last-child{display:none}
-  .hero-meta{justify-content:center;padding:0 20px}
+  .hero-meta>.scroll{justify-content:flex-start}
   .manifesto{padding:80px 20px}
   .feature-image{height:350px;margin:60px 20px}
   .stats{grid-template-columns:1fr 1fr;gap:20px;padding:60px 20px}
